@@ -411,25 +411,25 @@
     }
     
     function renderProducts() {
-      productsGrid.innerHTML = products.map(product => \`
+      productsGrid.innerHTML = products.map(product => `
         <article class="product-card">
-          <img class="product-image" src="\${product.image}" alt="\${product.name}">
+          <img class="product-image" src="${product.image}" alt="${product.name}">
           <div class="product-body">
             <div class="product-top">
               <div>
-                <h3 class="product-name">\${product.name}</h3>
-                <div class="product-price">\${formatRupiah(product.price)}\${product.unit}</div>
+                <h3 class="product-name">${product.name}</h3>
+                <div class="product-price">${formatRupiah(product.price)}${product.unit}</div>
               </div>
             </div>
-            <span class="badge \${product.stock ? 'available' : 'out'}">\${product.stock ? 'Tersedia' : 'Habis'}</span>
-            <p class="product-desc">\${product.description}</p>
+            <span class="badge ${product.stock ? 'available' : 'out'}">${product.stock ? 'Tersedia' : 'Habis'}</span>
+            <p class="product-desc">${product.description}</p>
             <div class="product-actions">
-              <button class="btn btn-primary" onclick="addToCart(\${product.id})" \${product.stock ? "" : "disabled"}>Taruh di Keranjang 🛒</button>
-              <button class="btn btn-buy" onclick="buyNow(\${product.id})" \${product.stock ? "" : "disabled"}>Beli Sekarang ⚡</button>
+              <button class="btn btn-primary" onclick="addToCart(${product.id})" ${product.stock ? "" : "disabled"}>Taruh di Keranjang 🛒</button>
+              <button class="btn btn-buy" onclick="buyNow(${product.id})" ${product.stock ? "" : "disabled"}>Beli Sekarang ⚡</button>
             </div>
           </div>
         </article>
-      \`).join("");
+      `).join("");
     }
     
     function addToCart(productId) {
@@ -460,17 +460,17 @@
       } else {
         cartItemsEl.innerHTML = cart.map(item => \`
           <div class="cart-item">
-            <img src="\${item.image}" alt="\${item.name}">
+            <img src="${item.image}" alt="${item.name}">
             <div>
-              <h4>\${item.name}</h4>
-              <div class="cart-meta">\${formatRupiah(item.price)} x \${item.qty}</div>
+              <h4>${item.name}</h4>
+              <div class="cart-meta">${formatRupiah(item.price)} x ${item.qty}</div>
               <div class="cart-item-actions">
-                <div class="qty-box">Jumlah: \${item.qty}</div>
-                <button class="remove-btn" onclick="removeFromCart(\${item.id})">Hapus</button>
+                <div class="qty-box">Jumlah: ${item.qty}</div>
+                <button class="remove-btn" onclick="removeFromCart(${item.id})">Hapus</button>
               </div>
             </div>
           </div>
-        \`).join("");
+        `).join("");
       }
     }
     
@@ -489,8 +489,8 @@
     function buyNow(productId) {
       const product = products.find(item => item.id === productId);
       if (!product || !product.stock) return;
-      const message = \`Halo Tidar Sayur, saya ingin membeli \${product.name} dengan harga \${formatRupiah(product.price)}\${product.unit}.\`;
-      const url = \`https://wa.me/\${whatsappNumber}?text=\${encodeURIComponent(message)}\`;
+      const message = \`Halo Tidar Sayur, saya ingin membeli ${product.name} dengan harga ${formatRupiah(product.price)}${product.unit}.\`;
+      const url = \`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}\`;
       window.open(url, "_blank");
     }
     
@@ -499,10 +499,10 @@
         alert("Keranjang masih kosong. Silakan pilih produk terlebih dahulu.");
         return;
       }
-      const lines = cart.map((item, index) => \`\${index + 1}. \${item.name} x\${item.qty} = \${formatRupiah(item.price * item.qty)}\`);
+      const lines = cart.map((item, index) => \`${index + 1}. ${item.name} x${item.qty} = ${formatRupiah(item.price * item.qty)}\`);
       const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-      const message = \`Halo Tidar Sayur, saya ingin checkout pesanan berikut:%0A\` + \`\${lines.join("%0A")}%0A%0A\` + \`Total: \${formatRupiah(totalPrice)}%0A\` + \`Mohon informasi ketersediaan dan proses pengirimannya.\`;
-      const url = \`https://wa.me/\${whatsappNumber}?text=\${message}\`;
+      const message = \`Halo Tidar Sayur, saya ingin checkout pesanan berikut:%0A\` + \`${lines.join("%0A")}%0A%0A\` + \`Total: ${formatRupiah(totalPrice)}%0A\` + \`Mohon informasi ketersediaan dan proses pengirimannya.\`;
+      const url = \`https://wa.me/${whatsappNumber}?text=${message}\`;
       window.open(url, "_blank");
     }
     
