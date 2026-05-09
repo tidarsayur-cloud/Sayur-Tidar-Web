@@ -365,6 +365,44 @@
 </div><!-- /layout -->
 
 <script>
+  // ===== SISTEM LOGIN ADMIN =====
+  const SANDI_RAHASIA = "sayursegar123"; // <-- GANTI SANDI RAHASIA ANDA DI SINI
+
+  // Cek apakah admin sudah login sebelumnya (agar tidak perlu login ulang saat di-refresh)
+  window.addEventListener('DOMContentLoaded', () => {
+    if (sessionStorage.getItem('admin_logged_in') === 'true') {
+      bukaDashboard();
+    }
+  });
+
+  function checkPassword() {
+    const inputSandi = document.getElementById('admin-password').value;
+    const errorText = document.getElementById('login-error');
+
+    if (inputSandi === SANDI_RAHASIA) {
+      // Jika sandi benar
+      sessionStorage.setItem('admin_logged_in', 'true');
+      bukaDashboard();
+    } else {
+      // Jika sandi salah
+      errorText.style.display = 'block';
+      document.getElementById('admin-password').value = ''; // Kosongkan input
+      setTimeout(() => { errorText.style.display = 'none'; }, 3000); // Hilangkan pesan error setelah 3 detik
+    }
+  }
+
+  function bukaDashboard() {
+    document.getElementById('login-overlay').style.display = 'none';
+    document.getElementById('main-layout').style.display = 'flex';
+  }
+
+  // Bikin tombol Enter bisa untuk submit sandi
+  document.getElementById('admin-password').addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+      checkPassword();
+    }
+  });
+  // ===============================
   // ===== DEMO SEED DATA (jika localStorage kosong) =====
   function seedDemoOrders() {
     const existing = JSON.parse(localStorage.getItem('tidarsayur_orders') || '[]');
