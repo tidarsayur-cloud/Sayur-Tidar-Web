@@ -458,7 +458,7 @@
       if (cart.length === 0) {
         cartItemsEl.innerHTML = '<div class="cart-empty">Keranjang Anda masih kosong. Yuk pilih sayur segar favorit Anda.</div>';
       } else {
-        cartItemsEl.innerHTML = cart.map(item => \`
+        cartItemsEl.innerHTML = cart.map(item => `
           <div class="cart-item">
             <img src="${item.image}" alt="${item.name}">
             <div>
@@ -489,8 +489,8 @@
     function buyNow(productId) {
       const product = products.find(item => item.id === productId);
       if (!product || !product.stock) return;
-      const message = \`Halo Tidar Sayur, saya ingin membeli ${product.name} dengan harga ${formatRupiah(product.price)}${product.unit}.\`;
-      const url = \`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}\`;
+      const message = `Halo Tidar Sayur, saya ingin membeli ${product.name} dengan harga ${formatRupiah(product.price)}${product.unit}.`;
+      const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
       window.open(url, "_blank");
     }
     
@@ -499,10 +499,10 @@
         alert("Keranjang masih kosong. Silakan pilih produk terlebih dahulu.");
         return;
       }
-      const lines = cart.map((item, index) => \`${index + 1}. ${item.name} x${item.qty} = ${formatRupiah(item.price * item.qty)}\`);
+      const lines = cart.map((item, index) => `${index + 1}. ${item.name} x${item.qty} = ${formatRupiah(item.price * item.qty)}`);
       const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-      const message = \`Halo Tidar Sayur, saya ingin checkout pesanan berikut:%0A\` + \`${lines.join("%0A")}%0A%0A\` + \`Total: ${formatRupiah(totalPrice)}%0A\` + \`Mohon informasi ketersediaan dan proses pengirimannya.\`;
-      const url = \`https://wa.me/${whatsappNumber}?text=${message}\`;
+      const message = `Halo Tidar Sayur, saya ingin checkout pesanan berikut:%0A` + `${lines.join("%0A")}%0A%0A` + `Total: ${formatRupiah(totalPrice)}%0A` + `Mohon informasi ketersediaan dan proses pengirimannya.`;
+      const url = `https://wa.me/${whatsappNumber}?text=${message}`;
       window.open(url, "_blank");
     }
     
