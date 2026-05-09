@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tidar Sayur | Beranda & Admin</title>
+  <title>Sayur Tidar - Sayuran Segar Langsung dari Petani</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -124,7 +124,7 @@
   <header class="site-header">
     <div class="container nav">
       <div class="logo">Tidar Sayur 🥦</div>
-      <nav class="nav-links">
+      <nav class="nav-links" id="navLinks">
         <button onclick="switchView('storefront')">Toko</button>
         <button onclick="switchView('admin')">Admin Panel</button>
       </nav>
@@ -443,7 +443,7 @@
     
     // Default Tanggal Hari Ini di Input Form
     
-// ============ AUTH & ADMIN PROTECTION ============
+// ============ NAVBAR ACTIVE STATE ============ function setActive(el) {   document.querySelectorAll('.nav-link').forEach(a => a.classList.remove('active'));   if (el) el.classList.add('active'); }  // Auto active on scroll window.addEventListener('scroll', function() {   const sections = ['home','promo','products','about','contact'];   let current = 'home';   sections.forEach(id => {     const el = document.getElementById(id);     if (el && window.scrollY >= el.offsetTop - 120) current = id;   });   document.querySelectorAll('.nav-link').forEach(a => {     a.classList.toggle('active', a.getAttribute('href') === '#' + current);   }); });  // ============ AUTH & ADMIN PROTECTION ============
 const ADMIN_SECRET_CODE = 'TIDAR2025';
 
 function getSession() { return JSON.parse(localStorage.getItem('ts_session') || 'null'); }
