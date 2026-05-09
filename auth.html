@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Tidar Sayur - Login</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Poppins',sans-serif;background:linear-gradient(135deg,#e8f5e9 0%,#f1f8e9 50%,#e0f2f1 100%);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.auth-wrapper{width:100%;max-width:440px}
+.brand{text-align:center;margin-bottom:28px}
+.brand-logo{font-size:2rem;margin-bottom:6px}
+.brand-name{font-size:1.6rem;font-weight:800;color:#2E7D32}
+.brand-sub{font-size:.9rem;color:#6b7280;margin-top:2px}
+.card{background:#fff;border-radius:24px;padding:36px 32px;box-shadow:0 20px 60px rgba(76,175,80,.15);border:1px solid rgba(76,175,80,.12)}
+.tabs{display:flex;background:#f1f8f1;border-radius:12px;padding:4px;margin-bottom:28px;gap:4px}
+.tab-btn{flex:1;padding:10px;border:none;background:transparent;border-radius:10px;font-family:inherit;font-size:.9rem;font-weight:600;color:#6b7280;cursor:pointer;transition:.2s}
+.tab-btn.active{background:#fff;color:#2E7D32;box-shadow:0 2px 8px rgba(76,175,80,.15)}
+.form-group{margin-bottom:16px}
+.form-group label{display:block;font-size:.85rem;font-weight:600;color:#374151;margin-bottom:6px}
+.form-group input{width:100%;padding:12px 16px;border:1.5px solid #e5e7eb;border-radius:12px;font-family:inherit;font-size:.95rem;outline:none;transition:.2s;background:#fafafa}
+.form-group input:focus{border-color:#4CAF50;box-shadow:0 0 0 4px rgba(76,175,80,.1);background:#fff}
+.btn-primary{width:100%;padding:13px;background:linear-gradient(135deg,#4CAF50,#66BB6A);color:#fff;border:none;border-radius:12px;font-family:inherit;font-size:1rem;font-weight:700;cursor:pointer;transition:.2s;margin-top:4px}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(76,175,80,.3)}
+.divider{display:flex;align-items:center;gap:12px;margin:20px 0;color:#9ca3af;font-size:.85rem}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:#e5e7eb}
+.btn-google{width:100%;padding:12px;background:#fff;border:1.5px solid #e5e7eb;border-radius:12px;font-family:inherit;font-size:.95rem;font-weight:600;color:#374151;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:.2s}
+.btn-google:hover{background:#f9fafb;border-color:#d1d5db;box-shadow:0 4px 12px rgba(0,0,0,.08)}
+.btn-google svg{width:20px;height:20px}
+.alert{padding:12px 14px;border-radius:10px;font-size:.88rem;font-weight:500;margin-bottom:16px;display:none}
+.alert.error{background:#fef2f2;color:#dc2626;border:1px solid #fecaca}
+.alert.success{background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0}
+.footer-link{text-align:center;margin-top:20px;font-size:.85rem;color:#6b7280}
+.footer-link a{color:#4CAF50;font-weight:600;text-decoration:none}
+.panel-section{display:none}
+.panel-section.active{display:block}
+</style>
+</head>
+<body>
+<div class="auth-wrapper">
+  <div class="brand">
+    <div class="brand-logo">🥬</div>
+    <div class="brand-name">Tidar Sayur</div>
+    <div class="brand-sub">Sayur segar, langsung ke meja Anda</div>
+  </div>
+  <div class="card">
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('login')">Masuk</button>
+      <button class="tab-btn" onclick="switchTab('signup')">Daftar</button>
+    </div>
+    <div id="alert-box" class="alert"></div>
+    <!-- LOGIN -->
+    <div id="panel-login" class="panel-section active">
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="login-email" placeholder="email@contoh.com" />
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="login-pass" placeholder="Masukkan password" />
+      </div>
+      <button class="btn-primary" onclick="doLogin()">Masuk</button>
+      <div class="divider">atau</div>
+      <button class="btn-google" onclick="doGoogleLogin()">
+        <svg viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+        Lanjutkan dengan Google
+      </button>
+    </div>
+    <!-- SIGNUP -->
+    <div id="panel-signup" class="panel-section">
+      <div class="form-group">
+        <label>Nama Lengkap</label>
+        <input type="text" id="signup-name" placeholder="Nama Anda" />
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="signup-email" placeholder="email@contoh.com" />
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="signup-pass" placeholder="Min. 6 karakter" />
+      </div>
+      <button class="btn-primary" onclick="doSignup()">Buat Akun</button>
+      <div class="divider">atau</div>
+      <button class="btn-google" onclick="doGoogleLogin()">
+        <svg viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+        Daftar dengan Google
+      </button>
+    </div>
+  </div>
+  <div class="footer-link">Belanja tanpa akun? <a href="index.html">Lanjut sebagai tamu</a></div>
+</div>
+<script>
+const ADMIN_SECRET = 'TIDAR2025';
+function switchTab(tab){
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',['login','signup'][i]===tab));
+  document.getElementById('panel-login').classList.toggle('active',tab==='login');
+  document.getElementById('panel-signup').classList.toggle('active',tab==='signup');
+  hideAlert();
+}
+function showAlert(msg,type){
+  const a=document.getElementById('alert-box');
+  a.textContent=msg;a.className='alert '+type;a.style.display='block';
+}
+function hideAlert(){const a=document.getElementById('alert-box');a.style.display='none';}
+function getUsers(){return JSON.parse(localStorage.getItem('ts_users')||'[]');}
+function saveUsers(u){localStorage.setItem('ts_users',JSON.stringify(u));}
+function setSession(user){localStorage.setItem('ts_session',JSON.stringify(user));}
+function doLogin(){
+  const email=document.getElementById('login-email').value.trim();
+  const pass=document.getElementById('login-pass').value;
+  if(!email||!pass){showAlert('Isi email dan password terlebih dahulu.','error');return;}
+  const users=getUsers();
+  const user=users.find(u=>u.email===email&&u.password===pass);
+  if(!user){showAlert('Email atau password salah.','error');return;}
+  setSession(user);
+  showAlert('Login berhasil! Mengalihkan...','success');
+  setTimeout(()=>window.location.href='index.html',1000);
+}
+function doSignup(){
+  const name=document.getElementById('signup-name').value.trim();
+  const email=document.getElementById('signup-email').value.trim();
+  const pass=document.getElementById('signup-pass').value;
+  if(!name||!email||!pass){showAlert('Lengkapi semua data.','error');return;}
+  if(pass.length<6){showAlert('Password minimal 6 karakter.','error');return;}
+  const users=getUsers();
+  if(users.find(u=>u.email===email)){showAlert('Email sudah terdaftar.','error');return;}
+  const newUser={name,email,password:pass,role:'customer',createdAt:new Date().toISOString()};
+  users.push(newUser);
+  saveUsers(users);
+  setSession(newUser);
+  showAlert('Akun berhasil dibuat! Mengalihkan...','success');
+  setTimeout(()=>window.location.href='index.html',1000);
+}
+function doGoogleLogin(){
+  const mockName='Pengguna Google';
+  const mockEmail='google_'+Date.now()+'@gmail.com';
+  const user={name:mockName,email:mockEmail,role:'customer',provider:'google',createdAt:new Date().toISOString()};
+  const users=getUsers();
+  if(!users.find(u=>u.email===mockEmail)){users.push(user);saveUsers(users);}
+  setSession(user);
+  showAlert('Login Google berhasil! Mengalihkan...','success');
+  setTimeout(()=>window.location.href='index.html',1000);
+}
+</script>
+</body>
+</html>
