@@ -537,5 +537,5 @@
     renderProducts();
     updateCart();
   </script>
-</body>
+<script>window.addEventListener('load',function(){var g=document.getElementById('productsGrid');if(!g||g.children.length>0)return;var h='';products.forEach(function(p){var s=p.stock;h+='<article class="product-card"><img class="product-image" src="'+p.image+'" alt="'+p.name+'"><div class="product-body"><div class="product-top"><div><h3 class="product-name">'+p.name+'</h3><div class="product-price">Rp'+p.price.toLocaleString('id-ID')+p.unit+'</div></div></div><span class="badge '+(s?'available':'out')+'">'+(s?'Tersedia':'Habis')+'</span><p class="product-desc">'+p.description+'</p><div class="product-actions"><button class="btn btn-primary" onclick="addToCart('+p.id+')"'+(s?'':' disabled')+'>Taruh di Keranjang</button><button class="btn btn-buy" onclick="buyNow('+p.id+')"'+(s?'':' disabled')+'>Beli Sekarang</button></div></div></article>';});g.innerHTML=h;});</script></body>
 </html>
