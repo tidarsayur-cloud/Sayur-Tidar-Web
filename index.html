@@ -497,7 +497,7 @@
       window.open(url, "_blank");
     }
     
-    function checkoutWhatsApp() {
+   function checkoutWhatsApp() {
       if (cart.length === 0) {
         alert("Keranjang masih kosong. Silakan pilih produk terlebih dahulu.");
         return;
@@ -522,15 +522,22 @@
       localStorage.setItem('tidarsayur_orders', JSON.stringify(existingOrders));
       // --- END NEW CODE ---
 
-      // Proceed to WhatsApp (Buat pesan dulu sebelum cart dibersihkan)
+      // 1. Buat teks pesan menggunakan \n (enter standar)
       const lines = cart.map((item, index) => `${index + 1}. ${item.name} x${item.qty} = ${formatRupiah(item.price * item.qty)}`);
-      const message = `Halo Tidar Sayur, saya ingin checkout pesanan berikut:%0A` + `${lines.join("%0A")}%0A%0A` + `Total: ${formatRupiah(totalPrice)}%0A` + `Mohon informasi ketersediaan dan proses pengirimannya.`;
-      const url = `https://wa.me/${whatsappNumber}?text=${message}`;
+      
+      const messageText = `Halo Tidar Sayur, saya ingin checkout pesanan berikut:\n` + 
+                          `${lines.join("\n")}\n\n` + 
+                          `Total: ${formatRupiah(totalPrice)}\n` + 
+                          `Mohon informasi ketersediaan dan proses pengirimannya.`;
+                          
+      // 2. Bungkus SELURUH pesan dengan encodeURIComponent agar aman dibaca WhatsApp
+      const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(messageText)}`;
 
-      // Optional: Clear the cart after checkout
+      // 3. Kosongkan keranjang
       cart = []; 
       updateCart();
 
+      // 4. Buka WhatsApp
       window.open(url, "_blank");
     }
     
