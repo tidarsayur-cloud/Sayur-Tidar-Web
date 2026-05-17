@@ -128,29 +128,36 @@
     }
   }
 
-  function renderDashboard() {
-    const rawData = localStorage.getItem('tidarsayur_orders') || '[]';
-    const orders = JSON.parse(rawData);
+// GANTI URL DI BAWAH INI DENGAN URL WEB APP YANG SAMA!
+const scriptURL = 'https://script.google.com/macros/s/AKfycbwRJAniSQ1VVwgCdJLZhNRbTzMi3IYTiRFfiClhVHHKFtMN-BBichTdNhvGPueZddvc/exec';
+
+async function renderDashboard() {
+  document.getElementById('table-body').innerHTML = '<tr><td colspan="3">Mengambil data dari server...</td></tr>';
+  
+  try {
+    // Ambil data dari Google Sheets
+    const response = await fetch(scriptURL);
+    const orders = await response.json();
 
     // 1. Update Angka Statistik
     document.getElementById('count-orders').innerText = orders.length;
     const total = orders.reduce((s, o) => s + o.totalPrice, 0);
     document.getElementById('sum-revenue').innerText = "Rp" + total.toLocaleString('id-ID');
 
-    // 2. Olah Data untuk Grafik (Grup per Tanggal)
+    // 2. Olah Data untuk Grafik
     const dailyData = {};
     orders.forEach(o => {
-      const date = o.timestamp.split('T')[0]; // Ambil YYYY-MM-DD
+      const date = o.timestamp.split('T')[0]; 
       if(!dailyData[date]) dailyData[date] = { count: 0, revenue: 0 };
       dailyData[date].count++;
       dailyData[date].revenue += o.totalPrice;
     });
 
-    const labels = Object.keys(dailyData).sort().slice(-7); // Ambil 7 hari terakhir
+    const labels = Object.keys(dailyData).sort().slice(-7); 
     const orderCounts = labels.map(l => dailyData[l].count);
     const revenueAmounts = labels.map(l => dailyData[l].revenue);
 
-    // 3. Render Grafik Pesanan (Line Chart)
+    // 3. Render Grafik (Pastikan menggunakan variabel let/const agar chart tidak error jika dirender ulang)
     new Chart(document.getElementById('orderChart'), {
       type: 'line',
       data: {
@@ -167,7 +174,6 @@
       options: { plugins: { legend: { display: false } } }
     });
 
-    // 4. Render Grafik Pendapatan (Bar Chart)
     new Chart(document.getElementById('revenueChart'), {
       type: 'bar',
       data: {
@@ -182,16 +188,21 @@
       options: { plugins: { legend: { display: false } } }
     });
 
-    // 5. Isi Tabel
+    // 4. Isi Tabel
     const tbody = document.getElementById('table-body');
-    tbody.innerHTML = orders.reverse().slice(0, 5).map(o => `
+    tbody.innerHTML = orders.reverse().slice(0, 10).map(o => `
       <tr>
         <td>${o.timestamp.split('T')[0]}</td>
         <td>${o.customerName}</td>
         <td style="color:#a5d6a7; font-weight:bold">Rp${o.totalPrice.toLocaleString('id-ID')}</td>
       </tr>
     `).join('');
+    
+  } catch (error) {
+    console.error("Gagal mengambil data", error);
+    document.getElementById('table-body').innerHTML = '<tr><td colspan="3">Gagal memuat data. Cek koneksi internet.</td></tr>';
   }
+}
 </script>
 
 </body>
