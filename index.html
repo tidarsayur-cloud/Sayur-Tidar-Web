@@ -508,7 +508,7 @@
       // --- START NEW CODE: Save order for Admin Dashboard ---
       const existingOrders = JSON.parse(localStorage.getItem('tidarsayur_orders') || '[]');
       const newOrder = {
-        customerName: "Pelanggan Web", // You can update this to grab a real name if you add an input field later
+        customerName: "Pelanggan Web", 
         deliveryDate: new Date().toISOString().split('T')[0],
         deliveryTime: "Secepatnya",
         orderNote: '',
@@ -520,16 +520,17 @@
       
       existingOrders.push(newOrder);
       localStorage.setItem('tidarsayur_orders', JSON.stringify(existingOrders));
-      
-      // Optional: Clear the cart after checkout
-      cart = []; 
-      updateCart();
       // --- END NEW CODE ---
 
-      // Proceed to WhatsApp
+      // Proceed to WhatsApp (Buat pesan dulu sebelum cart dibersihkan)
       const lines = cart.map((item, index) => `${index + 1}. ${item.name} x${item.qty} = ${formatRupiah(item.price * item.qty)}`);
       const message = `Halo Tidar Sayur, saya ingin checkout pesanan berikut:%0A` + `${lines.join("%0A")}%0A%0A` + `Total: ${formatRupiah(totalPrice)}%0A` + `Mohon informasi ketersediaan dan proses pengirimannya.`;
       const url = `https://wa.me/${whatsappNumber}?text=${message}`;
+
+      // Optional: Clear the cart after checkout
+      cart = []; 
+      updateCart();
+
       window.open(url, "_blank");
     }
     
