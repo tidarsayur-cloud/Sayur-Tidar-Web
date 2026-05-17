@@ -504,7 +504,7 @@
       window.open(url, "_blank");
     }
     
-async function checkoutWhatsApp() {
+function checkoutWhatsApp() {
       if (cart.length === 0) {
         alert("Keranjang masih kosong. Silakan pilih produk terlebih dahulu.");
         return;
@@ -512,23 +512,24 @@ async function checkoutWhatsApp() {
       
       const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
       
-      // Kirim data ke tabel 'orders' di Supabase
-      const { data, error } = await supabase
-        .from('orders')
-        .insert([
-          { 
-            customer_name: "Pelanggan Web", 
-            total_price: totalPrice, 
-            cart: cart,
-            status: "new"
-          }
-        ]);
+      // --- START NEW CODE: Save order for Admin Dashboard ---
+      const existingOrders = JSON.parse(localStorage.getItem('tidarsayur_orders') || '[]');
+      const newOrder = {
+        customerName: "Pelanggan Web", 
+        deliveryDate: new Date().toISOString().split('T')[0],
+        deliveryTime: "Secepatnya",
+        orderNote: '',
+        cart: [...cart], // copy the current cart
+        totalPrice: totalPrice,
+        timestamp: new Date().toISOString(),
+        status: "new"
+      };
+      
+      existingOrders.push(newOrder);
+      localStorage.setItem('tidarsayur_orders', JSON.stringify(existingOrders));
+      // --- END NEW CODE ---
 
-      if (error) {
-        console.error("Gagal menyimpan ke database:", error);
-      }
-
-      // Format pesan WhatsApp (tetap menggunakan enter \n dan encodeURIComponent)
+      // 1. Buat teks pesan menggunakan \n (enter standar)
       const lines = cart.map((item, index) => `${index + 1}. ${item.name} x${item.qty} = ${formatRupiah(item.price * item.qty)}`);
       
       const messageText = `Halo Tidar Sayur, saya ingin checkout pesanan berikut:\n` + 
@@ -536,13 +537,14 @@ async function checkoutWhatsApp() {
                           `Total: ${formatRupiah(totalPrice)}\n` + 
                           `Mohon informasi ketersediaan dan proses pengirimannya.`;
                           
+      // 2. Bungkus SELURUH pesan dengan encodeURIComponent agar aman dibaca WhatsApp
       const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(messageText)}`;
 
-      // Kosongkan keranjang setelah data terkirim
+      // 3. Kosongkan keranjang
       cart = []; 
       updateCart();
 
-      // Buka tab WhatsApp
+      // 4. Buka WhatsApp
       window.open(url, "_blank");
     }
     
