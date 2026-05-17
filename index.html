@@ -499,48 +499,45 @@
     }
     
 function checkoutWhatsApp() {
-      if (cart.length === 0) {
-        alert("Keranjang masih kosong. Silakan pilih produk terlebih dahulu.");
-        return;
-      }
-      
-      const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-      
-      // --- START NEW CODE: Save order for Admin Dashboard ---
-      const existingOrders = JSON.parse(localStorage.getItem('tidarsayur_orders') || '[]');
-      const newOrder = {
-        customerName: "Pelanggan Web", 
-        deliveryDate: new Date().toISOString().split('T')[0],
-        deliveryTime: "Secepatnya",
-        orderNote: '',
-        cart: [...cart], // copy the current cart
-        totalPrice: totalPrice,
-        timestamp: new Date().toISOString(),
-        status: "new"
-      };
-      
-      existingOrders.push(newOrder);
-      localStorage.setItem('tidarsayur_orders', JSON.stringify(existingOrders));
-      // --- END NEW CODE ---
+  if (cart.length === 0) {
+    alert("Keranjang masih kosong. Silakan pilih produk terlebih dahulu.");
+    return;
+  }
+  
+  const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+  
+  // Data yang akan dikirim ke Google Sheets
+  const newOrder = {
+    customerName: "Pelanggan Web", 
+    cart: [...cart], 
+    totalPrice: totalPrice,
+    timestamp: new Date().toISOString(),
+    status: "new"
+  };
+  
+  // GANTI URL DI BAWAH INI DENGAN URL WEB APP YANG KAMU COPY TADI!
+  const scriptURL = 'https://script.google.com/macros/s/AKfycbwRJAniSQ1VVwgCdJLZhNRbTzMi3IYTiRFfiClhVHHKFtMN-BBichTdNhvGPueZddvc/exec';
 
-      // 1. Buat teks pesan menggunakan \n (enter standar)
-      const lines = cart.map((item, index) => `${index + 1}. ${item.name} x${item.qty} = ${formatRupiah(item.price * item.qty)}`);
-      
-      const messageText = `Halo Tidar Sayur, saya ingin checkout pesanan berikut:\n` + 
-                          `${lines.join("\n")}\n\n` + 
-                          `Total: ${formatRupiah(totalPrice)}\n` + 
-                          `Mohon informasi ketersediaan dan proses pengirimannya.`;
-                          
-      // 2. Bungkus SELURUH pesan dengan encodeURIComponent agar aman dibaca WhatsApp
-      const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(messageText)}`;
+  // Kirim data ke Google Sheets secara diam-diam di background
+  fetch(scriptURL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // Pakai text/plain untuk menghindari error CORS
+    body: JSON.stringify(newOrder)
+  }).catch(error => console.error('Error!', error.message));
 
-      // 3. Kosongkan keranjang
-      cart = []; 
-      updateCart();
+  // Lanjutkan membuka WhatsApp seperti biasa
+  const lines = cart.map((item, index) => `${index + 1}. ${item.name} x${item.qty} = ${formatRupiah(item.price * item.qty)}`);
+  const messageText = `Halo Tidar Sayur, saya ingin checkout pesanan berikut:\n` + 
+                      `${lines.join("\n")}\n\n` + 
+                      `Total: ${formatRupiah(totalPrice)}\n` + 
+                      `Mohon informasi ketersediaan dan proses pengirimannya.`;
+                      
+  const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(messageText)}`;
 
-      // 4. Buka WhatsApp
-      window.open(url, "_blank");
-    }
+  cart = []; 
+  updateCart();
+  window.open(url, "_blank");
+}
     
     cartButton.addEventListener("click", openCart);
     
