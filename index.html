@@ -381,6 +381,13 @@
       <button class="btn btn-primary" id="checkoutBtn">Checkout via WhatsApp</button>
     </div>
   </aside>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <script>
+    // 2. TAMBAHKAN INISIALISASI SUPABASE DI SINI
+    const supabaseUrl = 'https://zayqmcdpcyuropxaazfa.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpheXFtY2RwY3l1cm9weGFhemZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwMzczODEsImV4cCI6MjA5NDYxMzM4MX0.CIxMg1Jrhmr-kvFjBEbKVgqYGI8YqkENwu0LcpBBzr0';
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
   <script>
     const whatsappNumber = "6287898513714";
     const products = [
@@ -497,7 +504,7 @@
       window.open(url, "_blank");
     }
     
-   function checkoutWhatsApp() {
+async function checkoutWhatsApp() {
       if (cart.length === 0) {
         alert("Keranjang masih kosong. Silakan pilih produk terlebih dahulu.");
         return;
@@ -505,24 +512,23 @@
       
       const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
       
-      // --- START NEW CODE: Save order for Admin Dashboard ---
-      const existingOrders = JSON.parse(localStorage.getItem('tidarsayur_orders') || '[]');
-      const newOrder = {
-        customerName: "Pelanggan Web", 
-        deliveryDate: new Date().toISOString().split('T')[0],
-        deliveryTime: "Secepatnya",
-        orderNote: '',
-        cart: [...cart], // copy the current cart
-        totalPrice: totalPrice,
-        timestamp: new Date().toISOString(),
-        status: "new"
-      };
-      
-      existingOrders.push(newOrder);
-      localStorage.setItem('tidarsayur_orders', JSON.stringify(existingOrders));
-      // --- END NEW CODE ---
+      // Kirim data ke tabel 'orders' di Supabase
+      const { data, error } = await supabase
+        .from('orders')
+        .insert([
+          { 
+            customer_name: "Pelanggan Web", 
+            total_price: totalPrice, 
+            cart: cart,
+            status: "new"
+          }
+        ]);
 
-      // 1. Buat teks pesan menggunakan \n (enter standar)
+      if (error) {
+        console.error("Gagal menyimpan ke database:", error);
+      }
+
+      // Format pesan WhatsApp (tetap menggunakan enter \n dan encodeURIComponent)
       const lines = cart.map((item, index) => `${index + 1}. ${item.name} x${item.qty} = ${formatRupiah(item.price * item.qty)}`);
       
       const messageText = `Halo Tidar Sayur, saya ingin checkout pesanan berikut:\n` + 
@@ -530,16 +536,17 @@
                           `Total: ${formatRupiah(totalPrice)}\n` + 
                           `Mohon informasi ketersediaan dan proses pengirimannya.`;
                           
-      // 2. Bungkus SELURUH pesan dengan encodeURIComponent agar aman dibaca WhatsApp
       const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(messageText)}`;
 
-      // 3. Kosongkan keranjang
+      // Kosongkan keranjang setelah data terkirim
       cart = []; 
       updateCart();
 
-      // 4. Buka WhatsApp
+      // Buka tab WhatsApp
       window.open(url, "_blank");
     }
+    
+    cartButton.addEventListener("click", openCart);
     
     cartButton.addEventListener("click", openCart);
     closeCart.addEventListener("click", closeCartSidebar);
